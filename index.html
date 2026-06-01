@@ -47,7 +47,7 @@
   --teal: #5dcaa5;
   --r: 12px;
   --r-lg: 16px;
-  --header-h: 150px;
+  --header-h: 100px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -83,8 +83,14 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
 }
+.header-logo {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+  user-select: none;
+}
+.header-logo:active { opacity: 0.6; }
 .header-title {
   font-family: 'Syne', sans-serif;
   font-size: 21px;
@@ -113,38 +119,6 @@ body {
 }
 .stats-pill strong { color: var(--green); font-size: 14px; display: block; font-family: 'Syne', sans-serif; font-weight: 700; }
 
-/* ── TOP TABS ───────────────────────────────────────── */
-.nav-scroll {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-snap-type: x proximity;
-  margin: 0 -18px;
-  padding: 0 18px;
-}
-.nav-scroll::-webkit-scrollbar { display: none; }
-.nav-tab {
-  flex-shrink: 0;
-  padding: 8px 15px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  white-space: nowrap;
-  scroll-snap-align: start;
-}
-.nav-tab.active {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
-}
 
 /* ── MAIN ───────────────────────────────────────────── */
 main {
@@ -412,20 +386,11 @@ main {
 <header class="header">
   <div class="header-inner">
     <div class="header-top">
-      <div>
+      <div class="header-logo" id="logoHome">
         <div class="header-title">Plano <span>Recomposição</span></div>
         <div class="header-sub">65kg · 1,71m · 24% gordura · ectomorfo</div>
       </div>
       <div class="stats-pill"><strong>155g</strong>proteína/dia</div>
-    </div>
-    <div class="nav-scroll" id="topTabs">
-      <button class="nav-tab active" data-target="visao">Semana</button>
-      <button class="nav-tab" data-target="padrao">Treino 18h</button>
-      <button class="nav-tab" data-target="cedo">Treino 13h</button>
-      <button class="nav-tab" data-target="sexta">Sexta 23h</button>
-      <button class="nav-tab" data-target="off">Dias OFF</button>
-      <button class="nav-tab" data-target="supp">Suplementos</button>
-      <button class="nav-tab" data-target="dicas">Dicas</button>
     </div>
   </div>
 </header>
@@ -757,9 +722,9 @@ main {
 
 <nav class="bottom-nav">
   <div class="bottom-nav-inner" id="bottomNav">
-    <button class="btn-nav active" data-target="visao">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Semana
+    <button class="btn-nav" data-target="off">
+      <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      OFF
     </button>
     <button class="btn-nav" data-target="padrao">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -787,36 +752,27 @@ main {
 <script>
 (function() {
   const sections = document.querySelectorAll('.section');
-  const topTabs = document.querySelectorAll('#topTabs .nav-tab');
   const navBtns = document.querySelectorAll('#bottomNav .btn-nav');
+  const logoHome = document.getElementById('logoHome');
 
   function activate(target) {
     sections.forEach(function(s) {
       s.classList.toggle('active', s.getAttribute('data-section') === target);
     });
-    topTabs.forEach(function(t) {
-      t.classList.toggle('active', t.getAttribute('data-target') === target);
-    });
     navBtns.forEach(function(b) {
       b.classList.toggle('active', b.getAttribute('data-target') === target);
     });
-    // bring the active top tab into view
-    const activeTab = document.querySelector('#topTabs .nav-tab.active');
-    if (activeTab && activeTab.scrollIntoView) {
-      activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  topTabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      activate(tab.getAttribute('data-target'));
-    });
-  });
   navBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
       activate(btn.getAttribute('data-target'));
     });
+  });
+
+  logoHome.addEventListener('click', function() {
+    activate('visao');
   });
 })();
 </script>
