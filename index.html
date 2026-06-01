@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Meu Plano">
+<title>Meu Plano — Recomposição</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #121212;
+  --bg3: #1a1a1a;
+  --bg4: #222222;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f0ede8;
+  --muted: #8a8780;
+  --dim: #56524e;
+
+  --blue: #5aa6e8;
+  --blue-bg: rgba(90,166,232,0.12);
+  --blue-border: rgba(90,166,232,0.28);
+
+  --green: #5dcaa5;
+  --green-bg: rgba(93,202,165,0.12);
+  --green-border: rgba(93,202,165,0.28);
+
+  --amber: #eaa436;
+  --amber-bg: rgba(234,164,54,0.12);
+  --amber-border: rgba(234,164,54,0.28);
+
+  --purple: #a299ee;
+  --purple-bg: rgba(162,153,238,0.12);
+  --purple-border: rgba(162,153,238,0.28);
+
+  --coral: #e8786a;
+  --coral-bg: rgba(232,120,106,0.12);
+  --coral-border: rgba(232,120,106,0.28);
+
+  --teal: #5dcaa5;
+  --r: 12px;
+  --r-lg: 16px;
+  --header-h: 150px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ─────────────────────────────────────────── */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,10,10,0.94);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  padding: calc(16px + var(--safe-top)) 0 14px;
+}
+.header-inner { max-width: 640px; margin: 0 auto; padding: 0 18px; }
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.header-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.05;
+}
+.header-title span { color: var(--green); }
+.header-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 300;
+  letter-spacing: 0.2px;
+}
+.stats-pill {
+  flex-shrink: 0;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  padding: 7px 13px;
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 1.3;
+}
+.stats-pill strong { color: var(--green); font-size: 14px; display: block; font-family: 'Syne', sans-serif; font-weight: 700; }
+
+/* ── TOP TABS ───────────────────────────────────────── */
+.nav-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+  margin: 0 -18px;
+  padding: 0 18px;
+}
+.nav-scroll::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex-shrink: 0;
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  scroll-snap-align: start;
+}
+.nav-tab.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+/* ── MAIN ───────────────────────────────────────────── */
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + var(--safe-top)) 16px calc(96px + var(--safe-bottom));
+}
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── MACRO GRID ─────────────────────────────────────── */
+.macro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.macro-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px;
+}
+.macro-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.2px; }
+.macro-value { font-family: 'Syne', sans-serif; font-size: 23px; font-weight: 700; line-height: 1; }
+.macro-unit { font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 3px; }
+.macro-accent { font-size: 10.5px; margin-top: 6px; }
+
+/* ── SECTION LABEL ──────────────────────────────────── */
+.section-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin: 4px 0 12px;
+}
+
+/* ── WEEK GRID ──────────────────────────────────────── */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.day-col {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 2px;
+  text-align: center;
+}
+.day-col.highlight { border-color: var(--amber-border); }
+.day-name { font-size: 9.5px; color: var(--dim); margin-bottom: 5px; font-weight: 500; }
+.day-badge {
+  font-size: 8.5px;
+  font-weight: 700;
+  padding: 3px 1px;
+  border-radius: 5px;
+  display: block;
+  line-height: 1.25;
+}
+.d-push  { background: var(--purple-bg); color: var(--purple); }
+.d-pull  { background: var(--green-bg); color: var(--green); }
+.d-legs  { background: var(--coral-bg); color: var(--coral); }
+.d-off   { background: var(--bg3); color: var(--dim); }
+.d-upper { background: var(--amber-bg); color: var(--amber); }
+.d-lower { background: var(--blue-bg); color: var(--blue); }
+
+/* ── MEAL CARD ──────────────────────────────────────── */
+.meal-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 15px 16px;
+  margin-bottom: 10px;
+}
+.meal-card.acc-amber { border-left: 2px solid var(--amber); border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.meal-card.acc-teal  { border-left: 2px solid var(--teal);  border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.meal-card.acc-blue  { border-left: 2px solid var(--blue);  border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.meal-card.hl-green { border-color: var(--green-border); }
+.meal-card.hl-amber { border-color: var(--amber-border); }
+
+.meal-header { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; flex-wrap: wrap; }
+.meal-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--dim);
+  min-width: 38px;
+  font-family: 'Syne', sans-serif;
+}
+.meal-name { font-size: 13.5px; font-weight: 500; flex: 1; min-width: 120px; }
+.meal-tag {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+.tag-pre   { background: var(--blue-bg); color: var(--blue); }
+.tag-pos   { background: var(--green-bg); color: var(--green); }
+.tag-main  { background: var(--purple-bg); color: var(--purple); }
+.tag-light { background: var(--bg3); color: var(--muted); }
+.tag-night { background: var(--amber-bg); color: var(--amber); }
+.tag-early { background: var(--green-bg); color: var(--green); }
+.tag-off   { background: var(--bg3); color: var(--dim); }
+
+.food-list { list-style: none; }
+.food-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.food-item:last-child { border-bottom: none; padding-bottom: 0; }
+.food-item:first-child { padding-top: 0; }
+.food-name { font-size: 13px; }
+.food-amount { font-size: 12px; color: var(--muted); text-align: right; flex-shrink: 0; }
+
+.meal-macros {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.meal-macro { font-size: 11.5px; color: var(--dim); }
+.meal-macro b { font-weight: 600; color: var(--muted); }
+
+/* ── TIP / ALERT ────────────────────────────────────── */
+.tip-box {
+  background: var(--bg2);
+  border-left: 2px solid var(--blue);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.tip-box.amber { border-left-color: var(--amber); }
+.tip-box.teal  { border-left-color: var(--teal); }
+.tip-box.green { border-left-color: var(--green); }
+.tip-box b { color: var(--text); font-weight: 500; }
+
+.alert-box {
+  background: var(--coral-bg);
+  border: 1px solid var(--coral-border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.alert-box b { color: var(--coral); }
+
+/* ── DAY SUMMARY ────────────────────────────────────── */
+.day-summary {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.day-summary.b-green { border-color: var(--green-border); }
+.day-summary.b-amber { border-color: var(--amber-border); }
+.day-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.kcal-pill {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  padding: 4px 11px;
+  font-size: 11.5px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ── SUPP CARD ──────────────────────────────────────── */
+.supp-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 15px 16px;
+  margin-bottom: 10px;
+}
+.supp-name { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+.supp-sub { font-size: 11px; font-weight: 600; color: var(--blue); margin-bottom: 7px; letter-spacing: 0.2px; }
+.supp-detail { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+/* ── SUBS / EXPECT TABLE ────────────────────────────── */
+.subs-table { width: 100%; border-collapse: collapse; }
+.subs-table td { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; vertical-align: top; }
+.subs-table tr:last-child td { border-bottom: none; padding-bottom: 0; }
+.subs-table tr:first-child td { padding-top: 0; }
+.subs-cat { font-size: 9.5px; font-weight: 700; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; padding-right: 12px; width: 92px; }
+.subs-items { color: var(--muted); }
+
+#badge-night, #badge-early {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.3px;
+}
+#badge-night { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+#badge-early { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+
+/* ── BOTTOM NAV ─────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: rgba(10,10,10,0.96);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-top: 1px solid var(--border2);
+  display: flex;
+  padding: 9px 6px calc(8px + var(--safe-bottom));
+  gap: 2px;
+}
+.bottom-nav-inner { max-width: 640px; margin: 0 auto; display: flex; width: 100%; gap: 2px; }
+.btn-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 2px;
+  border-radius: var(--r);
+  border: none;
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9.5px;
+  font-weight: 500;
+  transition: color 0.2s, background 0.2s;
+}
+.btn-nav svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.btn-nav.active { color: var(--text); background: var(--bg3); }
+
+@media (min-width: 540px) {
+  .header-title { font-size: 24px; }
+  .meal-name { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="header-title">Plano <span>Recomposição</span></div>
+        <div class="header-sub">65kg · 1,71m · 24% gordura · ectomorfo</div>
+      </div>
+      <div class="stats-pill"><strong>155g</strong>proteína/dia</div>
+    </div>
+    <div class="nav-scroll" id="topTabs">
+      <button class="nav-tab active" data-target="visao">Semana</button>
+      <button class="nav-tab" data-target="padrao">Treino 18h</button>
+      <button class="nav-tab" data-target="cedo">Treino 13h</button>
+      <button class="nav-tab" data-target="sexta">Sexta 23h</button>
+      <button class="nav-tab" data-target="off">Dias OFF</button>
+      <button class="nav-tab" data-target="supp">Suplementos</button>
+      <button class="nav-tab" data-target="dicas">Dicas</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── VISÃO GERAL ──────────────────────────────── -->
+  <section class="section active" data-section="visao">
+    <div class="macro-grid">
+      <div class="macro-card"><div class="macro-label">treino 18h</div><div class="macro-value">2.050<span class="macro-unit">kcal</span></div><div class="macro-accent" style="color:var(--blue)">padrão</div></div>
+      <div class="macro-card"><div class="macro-label">treino 13h</div><div class="macro-value">2.050<span class="macro-unit">kcal</span></div><div class="macro-accent" style="color:var(--green)">horário ajustado</div></div>
+      <div class="macro-card"><div class="macro-label">sexta noturna</div><div class="macro-value">1.950<span class="macro-unit">kcal</span></div><div class="macro-accent" style="color:var(--amber)">23h</div></div>
+      <div class="macro-card"><div class="macro-label">dias OFF</div><div class="macro-value">1.650<span class="macro-unit">kcal</span></div><div class="macro-accent" style="color:var(--muted)">descanso</div></div>
+    </div>
+
+    <div class="section-label">Semana</div>
+    <div class="week-grid">
+      <div class="day-col"><div class="day-name">SEG</div><span class="day-badge d-push">Push</span></div>
+      <div class="day-col"><div class="day-name">TER</div><span class="day-badge d-pull">Pull</span></div>
+      <div class="day-col"><div class="day-name">QUA</div><span class="day-badge d-legs">Legs</span></div>
+      <div class="day-col"><div class="day-name">QUI</div><span class="day-badge d-off">OFF</span></div>
+      <div class="day-col highlight"><div class="day-name">SEX</div><span class="day-badge d-upper">Upper</span></div>
+      <div class="day-col"><div class="day-name">SÁB</div><span class="day-badge d-lower">Lower</span></div>
+      <div class="day-col"><div class="day-name">DOM</div><span class="day-badge d-off">OFF</span></div>
+    </div>
+
+    <div class="tip-box">Treino às <b>18h</b> → protocolo padrão. Treino às <b>13h</b> → adianta o pré-treino pro café e desloca o almoço para depois do treino. Sexta tem protocolo noturno especial.</div>
+
+    <div class="section-label" style="margin-top:18px">Macros do dia</div>
+    <div class="meal-card">
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Proteína</span><span class="food-amount" style="color:var(--green);font-weight:600">155g / dia</span></li>
+        <li class="food-item"><span class="food-name">Carboidrato</span><span class="food-amount">~215g (treino)</span></li>
+        <li class="food-item"><span class="food-name">Gordura</span><span class="food-amount">~51g</span></li>
+        <li class="food-item"><span class="food-name">Creatina</span><span class="food-amount" style="color:var(--amber);font-weight:600">5g / dia</span></li>
+        <li class="food-item"><span class="food-name">Água mínima</span><span class="food-amount">3L + 500ml no treino</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── TREINO 18H ──────────────────────────────── -->
+  <section class="section" data-section="padrao">
+    <div class="day-summary"><div class="day-title">Protocolo padrão — 18h</div><div class="kcal-pill">~2.050 kcal</div></div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">06h30</span><span class="meal-name">Café da manhã</span><span class="meal-tag tag-light">acordar</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Ovos mexidos</span><span class="food-amount">2 unidades</span></li>
+        <li class="food-item"><span class="food-name">Pão integral 36%</span><span class="food-amount">1 fatia (25g)</span></li>
+        <li class="food-item"><span class="food-name">Pasta de amendoim</span><span class="food-amount">15g</span></li>
+        <li class="food-item"><span class="food-name">Café preto</span><span class="food-amount">sem açúcar</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~360</b> kcal</div><div class="meal-macro"><b>22g</b> ptn</div><div class="meal-macro"><b>22g</b> carb</div><div class="meal-macro"><b>20g</b> gord</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">12h00</span><span class="meal-name">Almoço</span><span class="meal-tag tag-main">principal</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Arroz branco cozido</span><span class="food-amount">150g</span></li>
+        <li class="food-item"><span class="food-name">Feijão</span><span class="food-amount">100g</span></li>
+        <li class="food-item"><span class="food-name">Frango grelhado ou carne magra</span><span class="food-amount">180g</span></li>
+        <li class="food-item"><span class="food-name">Salada + fio de azeite</span><span class="food-amount">à vontade</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~540</b> kcal</div><div class="meal-macro"><b>43g</b> ptn</div><div class="meal-macro"><b>65g</b> carb</div><div class="meal-macro"><b>8g</b> gord</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">16h30</span><span class="meal-name">Pré-treino — refeição</span><span class="meal-tag tag-pre">energia</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Banana média</span><span class="food-amount">1 un. (100g)</span></li>
+        <li class="food-item"><span class="food-name">Whey protein</span><span class="food-amount">1 scoop (30g)</span></li>
+        <li class="food-item"><span class="food-name">Aveia em pó</span><span class="food-amount">30g</span></li>
+        <li class="food-item"><span class="food-name">Água ou leite desnatado</span><span class="food-amount">200ml</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~380</b> kcal</div><div class="meal-macro"><b>28g</b> ptn</div><div class="meal-macro"><b>55g</b> carb</div><div class="meal-macro"><b>5g</b> gord</div></div>
+    </div>
+
+    <div class="meal-card acc-amber">
+      <div class="meal-header"><span class="meal-time">17h45</span><span class="meal-name">Pré-treino — suplemento</span><span class="meal-tag tag-pre">15 min antes</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Pré-treino (sua marca)</span><span class="food-amount">1–2 scoops</span></li>
+        <li class="food-item"><span class="food-name">Creatina monohidratada</span><span class="food-amount" style="color:var(--amber)">5g</span></li>
+      </ul>
+    </div>
+
+    <div class="meal-card acc-teal">
+      <div class="meal-header"><span class="meal-time">19h30</span><span class="meal-name">Pós-treino</span><span class="meal-tag tag-pos">até 40min</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Whey protein</span><span class="food-amount">1 scoop (30g)</span></li>
+        <li class="food-item"><span class="food-name">Banana ou maçã</span><span class="food-amount">1 unidade</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~230</b> kcal</div><div class="meal-macro"><b>24g</b> ptn</div><div class="meal-macro"><b>27g</b> carb</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">21h00</span><span class="meal-name">Jantar</span><span class="meal-tag tag-main">principal</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Arroz branco cozido</span><span class="food-amount">120g</span></li>
+        <li class="food-item"><span class="food-name">Ovos inteiros</span><span class="food-amount">3 unidades</span></li>
+        <li class="food-item"><span class="food-name">Frango ou atum</span><span class="food-amount">100g</span></li>
+        <li class="food-item"><span class="food-name">Legumes refogados</span><span class="food-amount">150g</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~540</b> kcal</div><div class="meal-macro"><b>38g</b> ptn</div><div class="meal-macro"><b>46g</b> carb</div><div class="meal-macro"><b>16g</b> gord</div></div>
+    </div>
+  </section>
+
+  <!-- ── TREINO 13H ──────────────────────────────── -->
+  <section class="section" data-section="cedo">
+    <div class="day-summary b-green"><div class="day-title">Treino cedo <span id="badge-early">13h</span></div><div class="kcal-pill">~2.050 kcal</div></div>
+    <div class="tip-box teal">Pré-treino alimentar vai às 11h. Almoço desloca para depois do treino (~14h30) como refeição de recuperação. Total do dia idêntico.</div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">06h30</span><span class="meal-name">Café da manhã</span><span class="meal-tag tag-light">leve</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Ovos mexidos</span><span class="food-amount">2 unidades</span></li>
+        <li class="food-item"><span class="food-name">Pão integral + pasta de amendoim</span><span class="food-amount">1 fatia + 15g</span></li>
+        <li class="food-item"><span class="food-name">Café preto</span><span class="food-amount">sem açúcar</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~360</b> kcal</div><div class="meal-macro"><b>22g</b> ptn</div></div>
+    </div>
+
+    <div class="meal-card hl-green">
+      <div class="meal-header"><span class="meal-time">11h00</span><span class="meal-name">Pré-treino — refeição</span><span class="meal-tag tag-early">2h antes</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Banana média</span><span class="food-amount">1 un. (100g)</span></li>
+        <li class="food-item"><span class="food-name">Whey protein</span><span class="food-amount">1 scoop (30g)</span></li>
+        <li class="food-item"><span class="food-name">Aveia em pó</span><span class="food-amount">30g</span></li>
+        <li class="food-item"><span class="food-name">Água ou leite desnatado</span><span class="food-amount">200ml</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~380</b> kcal</div><div class="meal-macro"><b>28g</b> ptn</div><div class="meal-macro"><b>55g</b> carb</div></div>
+    </div>
+
+    <div class="meal-card acc-amber">
+      <div class="meal-header"><span class="meal-time">12h30</span><span class="meal-name">Pré-treino — suplemento</span><span class="meal-tag tag-pre">30 min antes</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Pré-treino (sua marca)</span><span class="food-amount">1–2 scoops</span></li>
+        <li class="food-item"><span class="food-name">Creatina monohidratada</span><span class="food-amount" style="color:var(--amber)">5g</span></li>
+      </ul>
+    </div>
+
+    <div class="meal-card acc-teal">
+      <div class="meal-header"><span class="meal-time">14h30</span><span class="meal-name">Pós-treino — almoço</span><span class="meal-tag tag-pos">recuperação</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Arroz branco cozido</span><span class="food-amount">150g</span></li>
+        <li class="food-item"><span class="food-name">Feijão</span><span class="food-amount">100g</span></li>
+        <li class="food-item"><span class="food-name">Frango grelhado ou carne magra</span><span class="food-amount">180g</span></li>
+        <li class="food-item"><span class="food-name">Salada + fio de azeite</span><span class="food-amount">à vontade</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~540</b> kcal</div><div class="meal-macro"><b>43g</b> ptn</div><div class="meal-macro"><b>65g</b> carb</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">18h00</span><span class="meal-name">Lanche da tarde</span><span class="meal-tag tag-light">complemento</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Whey protein</span><span class="food-amount">1 scoop (30g)</span></li>
+        <li class="food-item"><span class="food-name">Maçã ou banana</span><span class="food-amount">1 unidade</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~230</b> kcal</div><div class="meal-macro"><b>24g</b> ptn</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">21h00</span><span class="meal-name">Jantar</span><span class="meal-tag tag-main">principal</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Arroz branco cozido</span><span class="food-amount">120g</span></li>
+        <li class="food-item"><span class="food-name">Ovos inteiros</span><span class="food-amount">3 unidades</span></li>
+        <li class="food-item"><span class="food-name">Frango ou atum</span><span class="food-amount">100g</span></li>
+        <li class="food-item"><span class="food-name">Legumes refogados</span><span class="food-amount">150g</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~540</b> kcal</div><div class="meal-macro"><b>38g</b> ptn</div><div class="meal-macro"><b>46g</b> carb</div></div>
+    </div>
+  </section>
+
+  <!-- ── SEXTA 23H ──────────────────────────────── -->
+  <section class="section" data-section="sexta">
+    <div class="day-summary b-amber"><div class="day-title">Upper completo <span id="badge-night">23h</span></div><div class="kcal-pill">~1.950 kcal</div></div>
+    <div class="tip-box amber">Lógica invertida: carboidrato concentrado no almoço, jantar leve às 19h30, pós-treino com proteína de digestão lenta. Não chega pesado na academia às 23h.</div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">06h30</span><span class="meal-name">Café da manhã</span><span class="meal-tag tag-light">igual</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Ovos + pão + pasta amendoim + café</span><span class="food-amount">igual ao padrão</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~360</b> kcal</div><div class="meal-macro"><b>22g</b> ptn</div></div>
+    </div>
+
+    <div class="meal-card hl-green">
+      <div class="meal-header"><span class="meal-time">12h00</span><span class="meal-name">Almoço — tanque principal</span><span class="meal-tag tag-main">aumenta</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Arroz branco cozido</span><span class="food-amount" style="color:var(--green)">200g ↑</span></li>
+        <li class="food-item"><span class="food-name">Feijão</span><span class="food-amount">100g</span></li>
+        <li class="food-item"><span class="food-name">Frango grelhado</span><span class="food-amount" style="color:var(--green)">200g ↑</span></li>
+        <li class="food-item"><span class="food-name">Salada + azeite</span><span class="food-amount">à vontade</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~650</b> kcal</div><div class="meal-macro"><b>52g</b> ptn</div><div class="meal-macro"><b>80g</b> carb</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">15h30</span><span class="meal-name">Lanche da tarde</span><span class="meal-tag tag-pre">carga moderada</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Whey protein</span><span class="food-amount">1 scoop (30g)</span></li>
+        <li class="food-item"><span class="food-name">Aveia em pó</span><span class="food-amount">30g</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~250</b> kcal</div><div class="meal-macro"><b>26g</b> ptn</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">19h30</span><span class="meal-name">Jantar — leve</span><span class="meal-tag tag-night">pré-noturno</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Ovos mexidos</span><span class="food-amount">3 unidades</span></li>
+        <li class="food-item"><span class="food-name">Iogurte grego natural</span><span class="food-amount">150g</span></li>
+        <li class="food-item"><span class="food-name">Fruta (maçã ou pera)</span><span class="food-amount">1 unidade</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~330</b> kcal</div><div class="meal-macro"><b>28g</b> ptn</div><div class="meal-macro"><b>22g</b> carb</div></div>
+    </div>
+
+    <div class="meal-card acc-amber">
+      <div class="meal-header"><span class="meal-time">22h30</span><span class="meal-name">Pré-treino — suplemento</span><span class="meal-tag tag-night">30 min antes</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Pré-treino — máx. 1 scoop</span><span class="food-amount">não 2</span></li>
+        <li class="food-item"><span class="food-name">Creatina monohidratada</span><span class="food-amount" style="color:var(--amber)">5g</span></li>
+        <li class="food-item"><span class="food-name">Banana pequena (opcional)</span><span class="food-amount">se fraco</span></li>
+      </ul>
+    </div>
+
+    <div class="meal-card acc-teal">
+      <div class="meal-header"><span class="meal-time">00h30</span><span class="meal-name">Pós-treino — noturno</span><span class="meal-tag tag-pos">proteína lenta</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Whey protein</span><span class="food-amount">1 scoop (30g)</span></li>
+        <li class="food-item"><span class="food-name">Iogurte grego natural</span><span class="food-amount" style="color:var(--teal)">200g ★</span></li>
+        <li class="food-item"><span class="food-name">Carboidrato pesado</span><span class="food-amount">evitar</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~280</b> kcal</div><div class="meal-macro"><b>40g</b> ptn</div><div class="meal-macro"><b>14g</b> carb</div></div>
+    </div>
+
+    <div class="tip-box teal">O iogurte grego no pós-treino da sexta age como caseína — proteína de digestão lenta que alimenta o músculo por 6–7h enquanto você dorme.</div>
+  </section>
+
+  <!-- ── DIAS OFF ──────────────────────────────── -->
+  <section class="section" data-section="off">
+    <div class="day-summary"><div class="day-title">Quinta e Domingo — OFF</div><div class="kcal-pill">~1.650 kcal</div></div>
+    <div class="tip-box green">Sem pré nem pós-treino, as calorias caem ~400 kcal naturalmente. Mantém proteína alta — é o que preserva o músculo no descanso.</div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">06h30</span><span class="meal-name">Café da manhã</span><span class="meal-tag tag-light">igual</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Ovos + pão + pasta amendoim + café</span><span class="food-amount">igual ao padrão</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~360</b> kcal</div><div class="meal-macro"><b>22g</b> ptn</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">12h00</span><span class="meal-name">Almoço</span><span class="meal-tag tag-main">igual</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Arroz + feijão + frango + salada</span><span class="food-amount">igual ao padrão</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~540</b> kcal</div><div class="meal-macro"><b>43g</b> ptn</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">15h30</span><span class="meal-name">Lanche — simples</span><span class="meal-tag tag-off">sem pré-treino</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Whey protein</span><span class="food-amount">1 scoop (30g)</span></li>
+        <li class="food-item"><span class="food-name">Maçã</span><span class="food-amount">1 unidade</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~200</b> kcal</div><div class="meal-macro"><b>24g</b> ptn</div></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header"><span class="meal-time">20h00</span><span class="meal-name">Jantar — reduzido</span><span class="meal-tag tag-off">leve</span></div>
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">Arroz branco cozido</span><span class="food-amount" style="color:var(--muted)">80g ↓</span></li>
+        <li class="food-item"><span class="food-name">Ovos inteiros</span><span class="food-amount">3 unidades</span></li>
+        <li class="food-item"><span class="food-name">Legumes (brócolis, abobrinha)</span><span class="food-amount">200g</span></li>
+      </ul>
+      <div class="meal-macros"><div class="meal-macro"><b>~470</b> kcal</div><div class="meal-macro"><b>28g</b> ptn</div><div class="meal-macro"><b>38g</b> carb</div></div>
+    </div>
+
+    <div class="tip-box amber">Qui é OFF mas sábado é Lower — durma bem. Dom é OFF após sábado pesado — aproveite o descanso, faz parte do processo.</div>
+  </section>
+
+  <!-- ── SUPLEMENTOS ──────────────────────────── -->
+  <section class="section" data-section="supp">
+    <div class="alert-box"><b>Atenção:</b> Creatina de 20g → <b>5g/dia</b>. Acima disso é desperdício e sobrecarga renal sem benefício adicional.</div>
+
+    <div class="supp-card"><div class="supp-name">Whey protein</div><div class="supp-sub">2 doses nos dias de treino</div><div class="supp-detail">Dose 1 às 16h30 no pré-treino. Dose 2 no pós-treino (até 40 min). Na sexta: dose 1 às 15h30, dose 2 à meia-noite com iogurte grego.</div></div>
+
+    <div class="supp-card"><div class="supp-name">Creatina monohidratada</div><div class="supp-sub">5g/dia — todos os dias</div><div class="supp-detail">Dias de treino: junto com o pré-treino suplemento. Dias OFF e sexta: qualquer refeição. Consistência diária é o que importa — inclusive fins de semana.</div></div>
+
+    <div class="supp-card"><div class="supp-name">Pré-treino</div><div class="supp-sub">Cuidado na sexta noturna</div><div class="supp-detail">Dias normais (18h): 1–2 scoops às 17h45. Sexta (23h): máximo 1 scoop às 22h30. Dois scoops tarde da noite vai atrapalhar o sono e comprometer a recuperação do sábado.</div></div>
+
+    <div class="supp-card"><div class="supp-name">Iogurte grego</div><div class="supp-sub">Substituto natural de caseína</div><div class="supp-detail">No pós-treino da sexta à meia-noite: 200g age como proteína de digestão lenta. Alimenta o músculo durante o sono sem precisar de caseína em pó.</div></div>
+
+    <div class="supp-card" style="opacity:0.55"><div class="supp-name" style="color:var(--muted)">GH, peptídeos ou similares</div><div class="supp-sub" style="color:var(--coral)">Não necessário agora</div><div class="supp-detail">Com fundamentos ainda em ajuste, o corpo responde muito melhor a dieta + sono + consistência. Riscos reais, custo alto, ganho marginal nesta fase.</div></div>
+  </section>
+
+  <!-- ── DICAS ──────────────────────────────────── -->
+  <section class="section" data-section="dicas">
+    <div class="section-label">Regras-chave</div>
+    <div class="tip-box"><b>Proteína é prioridade absoluta.</b> Nos dias em que a dieta furar, garanta ao menos os 155g de proteína antes de se preocupar com carboidrato ou caloria total.</div>
+    <div class="tip-box teal"><b>Sono = anabolismo.</b> 7–8h de sono valem mais do que qualquer suplemento. É durante o sono que o GH natural é secretado em maior quantidade.</div>
+    <div class="tip-box"><b>Não pule o pré-treino alimentar.</b> A refeição antes do treino é o que dá energia. Sem ela, você puxa menos e compromete o resultado.</div>
+    <div class="tip-box amber"><b>Sábado após sexta.</b> Se dormir depois de 1h30, empurre o Lower pro final da tarde. Pernas com sono ruim = risco de lesão e performance baixa.</div>
+    <div class="tip-box green"><b>Hidratação.</b> Mínimo 3L de água por dia. Nos dias de treino, mais 500ml. Creatina puxa água pro músculo — hidratação é crítica.</div>
+    <div class="tip-box"><b>Meça em 6 semanas.</b> Peso na balança pode estabilizar na recomposição. Confie na fita e no espelho, não só no número.</div>
+    <div class="tip-box teal"><b>Constância &gt; perfeição.</b> Um dia ruim não arruína nada. 6 semanas consistentes mudam o corpo.</div>
+
+    <div class="section-label" style="margin-top:20px">Substituições livres</div>
+    <div class="meal-card">
+      <table class="subs-table">
+        <tr><td class="subs-cat">Proteínas</td><td class="subs-items">Frango / Tilápia / Atum / Ovo / Carne magra</td></tr>
+        <tr><td class="subs-cat">Carbos</td><td class="subs-items">Arroz / Batata-doce / Mandioca / Macarrão integral</td></tr>
+        <tr><td class="subs-cat">Legumes</td><td class="subs-items">Brócolis / Abobrinha / Chuchu / Cenoura / Espinafre</td></tr>
+        <tr><td class="subs-cat">Gorduras</td><td class="subs-items">Azeite / Pasta de amendoim / Abacate (moderado)</td></tr>
+      </table>
+    </div>
+
+    <div class="section-label" style="margin-top:20px">Expectativas (ectomorfo)</div>
+    <div class="meal-card">
+      <ul class="food-list">
+        <li class="food-item"><span class="food-name">4–6 semanas</span><span class="food-amount" style="color:var(--green)">definição nas laterais</span></li>
+        <li class="food-item"><span class="food-name">2–4 meses</span><span class="food-amount" style="color:var(--blue)">24% → 18–20% gordura</span></li>
+        <li class="food-item"><span class="food-name">2–4 meses</span><span class="food-amount" style="color:var(--blue)">+2–3kg massa magra</span></li>
+        <li class="food-item"><span class="food-name">4–6 meses</span><span class="food-amount" style="color:var(--amber)">reavaliar: bulk limpo</span></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner" id="bottomNav">
+    <button class="btn-nav active" data-target="visao">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Semana
+    </button>
+    <button class="btn-nav" data-target="padrao">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      18h
+    </button>
+    <button class="btn-nav" data-target="cedo">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      13h
+    </button>
+    <button class="btn-nav" data-target="sexta">
+      <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      23h
+    </button>
+    <button class="btn-nav" data-target="supp">
+      <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+      Suplem.
+    </button>
+    <button class="btn-nav" data-target="dicas">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Dicas
+    </button>
+  </div>
+</nav>
+
+<script>
+(function() {
+  const sections = document.querySelectorAll('.section');
+  const topTabs = document.querySelectorAll('#topTabs .nav-tab');
+  const navBtns = document.querySelectorAll('#bottomNav .btn-nav');
+
+  function activate(target) {
+    sections.forEach(function(s) {
+      s.classList.toggle('active', s.getAttribute('data-section') === target);
+    });
+    topTabs.forEach(function(t) {
+      t.classList.toggle('active', t.getAttribute('data-target') === target);
+    });
+    navBtns.forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('data-target') === target);
+    });
+    // bring the active top tab into view
+    const activeTab = document.querySelector('#topTabs .nav-tab.active');
+    if (activeTab && activeTab.scrollIntoView) {
+      activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  topTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      activate(tab.getAttribute('data-target'));
+    });
+  });
+  navBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      activate(btn.getAttribute('data-target'));
+    });
+  });
+})();
+</script>
+</body>
+</html>
